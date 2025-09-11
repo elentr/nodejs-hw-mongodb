@@ -7,7 +7,7 @@ import { getAllContacts, getContactById } from './services/contacts.js';
 dotenv.config();
 
 // Читаємо змінну оточення PORT
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 export const setupServer = () => {
   const app = express();
