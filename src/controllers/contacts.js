@@ -5,8 +5,9 @@ import {
   updateContact,
   deleteContact,
 } from '../services/contacts.js';
+import createHttpError from 'http-errors';
 
-export const getAllContactsController = async (req, res) => {
+export const getAllContactsController = async (req, res, next) => {
   const contacts = await getAllContacts();
   res.status(200).json({
     status: 200,
@@ -15,15 +16,13 @@ export const getAllContactsController = async (req, res) => {
   });
 };
 
-export const getContactByIdController = async (req, res) => {
+export const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
 
   // Відповідь, якщо контакт не знайдено
   if (!contact) {
-    return res.status(404).json({
-      message: 'Contact not found',
-    });
+    throw new createHttpError.NotFound('Contact not found');
   }
 
   // Відповідь, якщо контакт знайдено
@@ -43,14 +42,12 @@ export const createContactController = async (req, res) => {
   });
 };
 
-export const updateContactController = async (req, res) => {
+export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const contact = await updateContact(contactId, req.body);
 
   if (!contact) {
-    return res.status(404).json({
-      message: 'Contact not found',
-    });
+    throw new createHttpError.NotFound('Contact not found');
   }
 
   res.status(200).json({
@@ -60,18 +57,13 @@ export const updateContactController = async (req, res) => {
   });
 };
 
-export const deleteContactController = async (req, res) => {
+export const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const contact = await deleteContact(contactId);
 
   if (!contact) {
-    return res.status(404).json({
-      message: 'Contact not found',
-    });
+    throw new createHttpError.NotFound('Contact not found');
   }
 
-  res.status(200).json({
-    status: 200,
-    message: `Successfully deleted contact with id ${contactId}!`,
-  });
+  res.status(204).send();
 };
