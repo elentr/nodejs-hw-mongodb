@@ -29,6 +29,7 @@ router.post(
 );
 router.patch(
   '/contacts/:contactId',
+  isValidId,
   validateBody(updateContactSchema),
   ctrlWrapper(updateContactController)
 );
