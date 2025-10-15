@@ -26,8 +26,6 @@ export const setupServer = () => {
     })
   );
 
-  // Підключення роутів
-
   app.use(cookieParser());
   app.use('/auth', usersRouter);
   app.use('/contacts', auth, contacts);

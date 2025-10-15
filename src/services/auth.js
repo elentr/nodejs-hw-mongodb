@@ -17,14 +17,11 @@ export async function registerUser(payload) {
 }
 
 export async function loginUser(email, password) {
-  // console.log('Login attempt for email:', email);
   const user = await User.findOne({ email });
-  // console.log('User found:', user);
   if (user === null) {
     throw new createHttpError.Unauthorized('Invalid credentials');
   }
   const isMatch = await bcrypt.compare(password, user.password);
-  // console.log('Password match:', isMatch);
   if (!isMatch) {
     throw new createHttpError.Unauthorized('Invalid credentials');
   }
