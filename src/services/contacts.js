@@ -1,5 +1,7 @@
 import { Contact } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { v2 as cloudinary } from 'cloudinary';
+import fs from 'node:fs/promises';
 
 export async function getAllContacts({ page, perPage, sort, filter, userId }) {
   const skip = page > 0 ? (page - 1) * perPage : 0;
@@ -16,6 +18,12 @@ export async function getAllContacts({ page, perPage, sort, filter, userId }) {
 export const getContactById = async (contactId, userId) => {
   const contact = await Contact.findOne({ _id: contactId, userId });
   return contact;
+};
+
+export const uploadToCloudinary = async filePath => {
+  const result = await cloudinary.uploader.upload(filePath);
+  await fs.unlink(filePath);
+  return result.secure_url;
 };
 
 export const createContact = async (payload, userId) => {

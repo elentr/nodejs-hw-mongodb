@@ -11,6 +11,8 @@ import {
   parseFilterParams,
   parseSortParams,
 } from '../utils/parseAdditionParams.js';
+import fs from 'node:fs/promises';
+import uploadToCloudinary from '../utils/uploadToCloudinary.js';
 
 export const getAllContactsController = async (req, res, next) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -50,7 +52,12 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const createContactController = async (req, res) => {
   const userId = req.user._id;
-  const contact = await createContact(req.body, userId);
+  let payload = req.body;
+  if (req.file) {
+    payload.photo = await uploadToCloudinary(req.file.path);
+    await fs.unlink(req.file.path); // видалити тимчасовий файл
+  }
+  const contact = await createContact(payload, userId);
   res.status(201).json({
     status: 201,
     message: 'Contact created successfully',
@@ -61,12 +68,15 @@ export const createContactController = async (req, res) => {
 export const updateContactController = async (req, res, next) => {
   const { contactId } = req.params;
   const userId = req.user._id;
-  const contact = await updateContact(contactId, req.body, userId);
-
+  let payload = req.body;
+  if (req.file) {
+    payload.photo = await uploadToCloudinary(req.file.path);
+    await fs.unlink(req.file.path);
+  }
+  const contact = await updateContact(contactId, payload, userId);
   if (!contact) {
     throw new createHttpError.NotFound('Contact not found');
   }
-
   res.status(200).json({
     status: 200,
     message: `Successfully updated contact with id ${contactId}!`,
