@@ -11,8 +11,8 @@ import {
   parseFilterParams,
   parseSortParams,
 } from '../utils/parseAdditionParams.js';
-import fs from 'node:fs/promises';
-import uploadToCloudinary from '../utils/uploadToCloudinary.js';
+import { saveFileToCloudinary } from '../utils/saveToCloudinary.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const getAllContactsController = async (req, res, next) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -52,15 +52,18 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const createContactController = async (req, res) => {
   const userId = req.user._id;
-  let payload = req.body;
+  let photoUrl;
   if (req.file) {
-    payload.photo = await uploadToCloudinary(req.file.path);
-    await fs.unlink(req.file.path); // видалити тимчасовий файл
+    if (process.env.ENABLE_CLOUDINARY === 'true') {
+      photoUrl = await saveFileToCloudinary(req.file);
+    } else {
+      photoUrl = await saveFileToUploadDir(req.file);
+    }
   }
-  const contact = await createContact(payload, userId);
+  const contact = await createContact({ ...req.body, photo: photoUrl, userId });
   res.status(201).json({
     status: 201,
-    message: 'Contact created successfully',
+    message: 'Successfully created a contact!',
     data: contact,
   });
 };
@@ -70,8 +73,17 @@ export const updateContactController = async (req, res, next) => {
   const userId = req.user._id;
   let payload = req.body;
   if (req.file) {
-    payload.photo = await uploadToCloudinary(req.file.path);
-    await fs.unlink(req.file.path);
+    try {
+      let photoUrl;
+      if (process.env.ENABLE_CLOUDINARY === 'true') {
+        photoUrl = await saveFileToCloudinary(req.file);
+      } else {
+        photoUrl = await saveFileToUploadDir(req.file);
+      }
+      payload.photo = photoUrl;
+    } catch (error) {
+      throw new createHttpError(500, 'Failed to upload photo');
+    }
   }
   const contact = await updateContact(contactId, payload, userId);
   if (!contact) {
