@@ -1,5 +1,6 @@
 import cloudinary from 'cloudinary';
 import fs from 'node:fs/promises';
+import 'dotenv/config';
 
 cloudinary.v2.config({
   secure: true,

@@ -9,7 +9,7 @@ export async function getAllContacts({ page, perPage, sort, filter, userId }) {
   const contactsQuery = Contact.find(filter);
   const [contacts, totalItems] = await Promise.all([
     contactsQuery.sort(sort).skip(skip).limit(perPage),
-    Contact.find(filter).countDocuments(),
+    Contact.countDocuments(filter),
   ]);
 
   return { contacts, ...calculatePaginationData(totalItems, page, perPage) };
@@ -22,7 +22,7 @@ export const getContactById = async (contactId, userId) => {
 
 export const uploadToCloudinary = async filePath => {
   const result = await cloudinary.uploader.upload(filePath);
-  await fs.unlink(filePath);
+  await fs.unlink(filePath).catch(() => {});
   return result.secure_url;
 };
 
