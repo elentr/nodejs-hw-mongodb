@@ -1,0 +1,33 @@
+tags:
+  - Auth
+summary: Sign out user
+operationId: signOutUser
+description: 'Log out the user and invalidate access token'
+parameters:
+  - in: header
+    name: Authorization
+    schema:
+      type: string
+    required: true
+    description: Bearer access token
+responses:
+  '200':
+    description: Logout completed
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'User successfully logged out'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+security:
+  - bearerAuth: []

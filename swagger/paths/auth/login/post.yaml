@@ -1,0 +1,54 @@
+tags:
+  - Auth
+summary: Authenticate user
+operationId: authenticateUser
+description: 'User login to obtain access token'
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            description: Registered email address
+            type: string
+            example: john.doe@example.com
+          password:
+            description: User password
+            type: string
+            example: MySecurePass1
+responses:
+  '200':
+    description: Login successful
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - result
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'User successfully authenticated'
+            result:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  description: JWT access token
+                  type: string
+                  example: KFszsdS0C453aHf2GWQhp8jfSmsbfTUcJglYcQtG
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+  '404':
+    $ref: '../../../components/responses/404.yaml'
+security: []

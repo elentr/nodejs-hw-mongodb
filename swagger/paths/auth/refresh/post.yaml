@@ -1,0 +1,48 @@
+tags:
+  - Auth
+summary: Renew access token
+operationId: renewToken
+description: 'Refresh the access token using a valid refresh token'
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - refreshToken
+        properties:
+          refreshToken:
+            description: Token used to refresh access
+            type: string
+            example: rTQ52ksqBKFszsdS0C453aHf2GWQhp8jfSmsbfTUcJglYcQtG
+responses:
+  '200':
+    description: Access token renewed
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - result
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Access token renewed successfully'
+            result:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  description: New JWT access token
+                  type: string
+                  example: KFszsdS0C453aHf2GWQhp8jfSmsbfTUcJglYcQtG
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+security:
+  - bearerAuth: []

@@ -1,0 +1,30 @@
+tags:
+  - Contacts
+summary: Update contact
+operationId: updateContact
+description:
+  Updates contact data by its ID. Requires authorization via Bearer token.
+security:
+  - bearerAuth: []
+parameters:
+  - name: id
+    in: path
+    required: true
+    description: Contact ID to update
+    schema:
+      type: string
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: ../../../components/schemas/contact.yaml
+responses:
+  '200':
+    description: Contact successfully updated
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/contact.yaml'
+  '404':
+    $ref: '../../../components/responses/400.yaml'

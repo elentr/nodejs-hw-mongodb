@@ -1,0 +1,71 @@
+tags:
+  - Auth
+summary: Create new account
+operationId: createAccount
+description: 'Register a new user in the system'
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            description: Email to register
+            type: string
+            example: jone.doe@example.com
+          password:
+            description: Enter a secure password
+            type: string
+            example: SecurePwd123
+responses:
+  '201':
+    description: Account successfully created
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - result
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: 'New account created successfully'
+            result:
+              type: object
+              required:
+                - userId
+                - email
+              properties:
+                userId:
+                  type: string
+                  example: 64fa123bc456def7890abcd1
+                email:
+                  type: string
+                  example: john.doe@example.com
+  '400':
+    $ref: ../../../components/responses/400.yaml
+  '409':
+    description: Email already in use
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [status, message]
+          properties:
+            status:
+              type: integer
+              example: 409
+            message:
+              type: string
+              example: Email in use
+  '500':
+    $ref: ../../../components/responses/500.yaml
+security: []

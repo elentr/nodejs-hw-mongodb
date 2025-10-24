@@ -1,0 +1,43 @@
+tags:
+  - Auth
+summary: Change user password
+operationId: changePassword
+description: 'Reset the user password using the token from email'
+requestBody:
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - token
+          - newPassword
+        properties:
+          token:
+            description: Password reset token
+            type: string
+            example: abc123def456
+          newPassword:
+            description: New password for the account
+            type: string
+            example: NewPass123
+responses:
+  '200':
+    description: Password reset successful
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Password has been changed successfully'
+  '401':
+    $ref: '../../../components/responses/401.yaml'
+security:
+  - bearerAuth: []
