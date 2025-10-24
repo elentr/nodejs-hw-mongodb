@@ -2,7 +2,7 @@ tags:
   - Auth
 summary: Renew access token
 operationId: renewToken
-description: 'Refresh the access token using a valid refresh token'
+description: Refresh the access token using a valid refresh token
 requestBody:
   content:
     application/json:

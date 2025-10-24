@@ -2,7 +2,7 @@ tags:
   - Auth
 summary: Create new account
 operationId: createAccount
-description: 'Register a new user in the system'
+description: Register a new user in the system
 requestBody:
   content:
     application/json:

@@ -2,7 +2,7 @@ tags:
   - Auth
 summary: Authenticate user
 operationId: authenticateUser
-description: 'User login to obtain access token'
+description: User login to obtain access token
 requestBody:
   content:
     application/json:

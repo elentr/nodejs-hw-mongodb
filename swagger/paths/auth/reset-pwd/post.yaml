@@ -2,7 +2,7 @@ tags:
   - Auth
 summary: Change user password
 operationId: changePassword
-description: 'Reset the user password using the token from email'
+description: Reset the user password using the token from email
 requestBody:
   content:
     application/json:
