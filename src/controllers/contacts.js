@@ -52,15 +52,21 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const createContactController = async (req, res) => {
   const userId = req.user._id;
-  let photoUrl;
+  let payload = { ...req.body };
+
   if (req.file) {
-    if (process.env.ENABLE_CLOUDINARY === 'true') {
-      photoUrl = await saveFileToCloudinary(req.file);
-    } else {
-      photoUrl = await saveFileToUploadDir(req.file);
+    try {
+      const photoUrl =
+        process.env.ENABLE_CLOUDINARY === 'true'
+          ? await saveFileToCloudinary(req.file)
+          : await saveFileToUploadDir(req.file);
+
+      payload.photo = photoUrl;
+    } catch (error) {
+      throw createHttpError(500, `Failed to upload photo: ${error.message}`);
     }
   }
-  const contact = await createContact({ ...req.body, photo: photoUrl, userId });
+  const contact = await createContact(payload, userId);
   res.status(201).json({
     status: 201,
     message: 'Successfully created a contact!',
@@ -74,21 +80,18 @@ export const updateContactController = async (req, res, next) => {
   let payload = req.body;
   if (req.file) {
     try {
-      let photoUrl;
-      if (process.env.ENABLE_CLOUDINARY === 'true') {
-        photoUrl = await saveFileToCloudinary(req.file);
-      } else {
-        photoUrl = await saveFileToUploadDir(req.file);
-      }
+      const photoUrl =
+        process.env.ENABLE_CLOUDINARY === 'true'
+          ? await saveFileToCloudinary(req.file)
+          : await saveFileToUploadDir(req.file);
+
       payload.photo = photoUrl;
     } catch (error) {
-      throw new createHttpError(500, 'Failed to upload photo');
+      throw createHttpError(500, `Failed to upload photo: ${error.message}`);
     }
   }
   const contact = await updateContact(contactId, payload, userId);
-  if (!contact) {
-    throw new createHttpError.NotFound('Contact not found');
-  }
+  if (!contact) throw createHttpError.NotFound('Contact not found');
   res.status(200).json({
     status: 200,
     message: `Successfully updated contact with id ${contactId}!`,
