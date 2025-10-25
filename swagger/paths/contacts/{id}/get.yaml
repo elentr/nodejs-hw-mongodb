@@ -3,27 +3,34 @@ tags:
 summary: Get a contact by its ID
 operationId: getContactById
 description:
-  'Returns detailed information about the contact by the identifier specified in
-  the path. Requires authorization via Bearer token.'
+  Returns detailed information about the contact by the identifier specified in
+  the path. Requires authorization via Bearer token.
 security:
   - bearerAuth: []
 parameters:
-  - in: path
-    name: id
+  - name: id
+    in: path
     required: true
     description: Contact ID to receive
     schema:
       type: string
 responses:
   '200':
-    description: 'Contact successfully found'
+    description: Contact successfully found
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas/contact.yaml'
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found contact with id {id}!
+            data:
+              $ref: ../../../components/schemas/contact.yaml
   '404':
-    description: 'Contact not found'
-    content:
-      application/json:
-        schema:
-          $ref: '../../../components/responses/404.yaml'
+    $ref: '../../../components/responses/404.yaml'
+  '500':
+    $ref: '../../../components/responses/500.yaml'

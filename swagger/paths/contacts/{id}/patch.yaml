@@ -16,15 +16,47 @@ parameters:
 requestBody:
   required: true
   content:
-    application/json:
+    multipart/form-data:
       schema:
-        $ref: ../../../components/schemas/contact.yaml
+        type: object
+        properties:
+          name:
+            type: string
+            description: Contact name (3-20 characters)
+          phoneNumber:
+            type: string
+            description: Contact phone number (6-14 characters)
+          email:
+            type: string
+            description: Contact email (optional)
+          photo:
+            type: string
+            format: binary
+            description: Contact photo file (optional)
+          isFavourite:
+            type: boolean
+            description: Favorite status (optional)
+          contactType:
+            type: string
+            enum: [work, home, personal]
+            description: Contact type
 responses:
   '200':
     description: Contact successfully updated
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas/contact.yaml'
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully updated contact with id {id}!
+            data:
+              $ref: ../../../components/schemas/contact.yaml
   '404':
     $ref: '../../../components/responses/404.yaml'
+  '500':
+    $ref: '../../../components/responses/500.yaml'
