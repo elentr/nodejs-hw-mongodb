@@ -12,8 +12,10 @@ tags:
   - name: Auth
     description: Auth operations.
 servers:
-  - url: http://localhost:3000
-  - url: https://contacts-app-hdqa.onrender.com/
+  # - url: http://localhost:3000
+  #   description: Local development server
+  - url: https://contacts-app-hdqa.onrender.com
+    description: Production server
 paths:
   /contacts/{id}:
     get:
@@ -47,5 +49,3 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-security:
-  - bearerAuth: []

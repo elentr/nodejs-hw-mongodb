@@ -1,13 +1,15 @@
-description: User not found
+description: Contact not found
 content:
   application/json:
     schema:
       type: object
-      required: [status, message]
+      required:
+        - status
+        - message
       properties:
         status:
           type: integer
           example: 404
         message:
           type: string
-          example: User not found
+          example: Contact not found
